@@ -2,6 +2,7 @@ package com.idziak.planner.gui.grid.panel;
 
 import com.google.common.base.Preconditions;
 import com.idziak.planner.domain.entity.*;
+import com.idziak.planner.domain.logic.GridController;
 import com.idziak.planner.gui.grid.panel.contextmenu.EmptyCellContextMenu;
 import com.idziak.planner.gui.grid.panel.contextmenu.EntityCellContextMenu;
 import com.idziak.planner.gui.grid.panel.contextmenu.EntityDestinationCellContextMenu;
@@ -13,7 +14,9 @@ public class GridPanelController {
 
     private final GridPanelView gridPanelView;
     private final GridPanelModel gridPanelModel;
+    private final GridController gridController;
 
+    // CONTEXT MENUS
     private final EmptyCellContextMenu emptyCellContextMenu;
     private final ObstacleCellContextMenu obstacleContextMenu;
     private final EntityCellContextMenu entityContextMenu;
@@ -23,19 +26,24 @@ public class GridPanelController {
     private Mode activeMode;
     private EntityCell addDestinationMode_entityCell;
 
-    public GridPanelController() {
+    public GridPanelController(GridController gridController) {
+        this.gridController = gridController;
+
         gridPanelModel = new GridPanelModel();
-        GridModel gridModel = new GridModel(6, 4);
         gridPanelModel.setCellWidth(60);
-        gridPanelModel.setGridModel(gridModel);
+        gridPanelModel.setGridModel(gridController.getModel());
 
         gridPanelView = new GridPanelView(gridPanelModel, this);
+
         emptyCellContextMenu = new EmptyCellContextMenu(this);
         obstacleContextMenu = new ObstacleCellContextMenu(this);
         entityContextMenu = new EntityCellContextMenu(this);
         entityDestinationContextMenu = new EntityDestinationCellContextMenu(this);
 
-        gridModel.addModelChangeListener(gridModel1 -> gridPanelView.repaint());
+        gridController.getModel().addModelChangeListener(gridModel1 -> {
+            gridController.updatePaths();
+            gridPanelView.repaint();
+        });
     }
 
     public GridPanelView getView() {

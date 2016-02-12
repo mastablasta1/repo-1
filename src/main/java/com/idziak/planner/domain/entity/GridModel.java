@@ -3,6 +3,7 @@ package com.idziak.planner.domain.entity;
 import com.google.common.base.Preconditions;
 import com.idziak.planner.util.Observable;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -100,5 +101,40 @@ public class GridModel {
         EntityDestinationCell destinationCell = new EntityDestinationCell(entity);
         entity.setDestination(destinationCell);
         putCell(gridX, gridY, destinationCell);
+    }
+
+/*
+    public Map<EntityCell, EntityDestinationCell> getEntityDestinationMap() {
+        HashMap<EntityCell, EntityDestinationCell> map = new HashMap<>();
+
+        for (GridCell[] row : grid) {
+            for (GridCell gridCell : row) {
+                if (isEntityCell(gridCell)) {
+                    EntityCell entityCell = (EntityCell) gridCell;
+                    EntityDestinationCell destination = entityCell.getDestination();
+                    if (destination != null) {
+                        map.put(entityCell, destination);
+                    }
+                }
+            }
+        }
+        return map;
+    }
+*/
+
+    public static boolean isEntityCell(GridCell gridCell) {
+        return gridCell instanceof EntityCell;
+    }
+
+    public Set<EntityCell> getAllEntities() {
+        Set<EntityCell> entities = new HashSet<>();
+        for (GridCell[] row : grid) {
+            for (GridCell gridCell : row) {
+                if (isEntityCell(gridCell)) {
+                    entities.add(((EntityCell) gridCell));
+                }
+            }
+        }
+        return entities;
     }
 }

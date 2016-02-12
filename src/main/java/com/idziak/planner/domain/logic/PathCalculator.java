@@ -4,17 +4,12 @@ import com.idziak.planner.domain.entity.*;
 
 import java.util.Optional;
 
-public class PathFinder {
+public class PathCalculator {
 
     public Optional<GridPath> findPath(GridModel gridModel, EntityCell entityCell, EntityDestinationCell destinationCell) {
 
-        Optional<Position> optStartPos = gridModel.findCellPosition(entityCell);
-        Optional<Position> optEndPos = gridModel.findCellPosition(destinationCell);
-        if (!optStartPos.isPresent() || !optEndPos.isPresent()) {
-            throw new IllegalArgumentException("Grid model does not contain given cells");
-        }
-        Position startPos = optStartPos.get();
-        Position endPos = optEndPos.get();
+        Position startPos = entityCell.getPosition();
+        Position endPos = destinationCell.getPosition();
 
         GridPath.Builder pathBuilder = GridPath.builder();
         pathBuilder.start(entityCell);
