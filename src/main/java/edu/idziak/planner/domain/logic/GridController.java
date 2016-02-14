@@ -4,6 +4,7 @@ import edu.idziak.planner.domain.entity.EntityCell;
 import edu.idziak.planner.domain.entity.EntityDestinationCell;
 import edu.idziak.planner.domain.entity.GridModel;
 import edu.idziak.planner.domain.entity.GridPath;
+import edu.idziak.planner.gui.grid.panel.GridPanelController;
 
 import java.util.Optional;
 import java.util.Set;
@@ -12,9 +13,10 @@ public class GridController {
 
     private PathCalculator pathCalculator;
     private GridModel gridModel;
+    private GridPanelController gridPanelController;
 
     public GridController() {
-        pathCalculator = new PathCalculator();
+        pathCalculator = new DummyPathCalculator();
         gridModel = new GridModel(10, 10);
     }
 
@@ -26,7 +28,7 @@ public class GridController {
             if (destination == null) {
                 continue;
             }
-            Optional<GridPath> path = pathCalculator.findPath(gridModel, entity, destination);
+            Optional<GridPath> path = pathCalculator.calculatePath(gridModel, entity, destination);
             if (!path.isPresent()) {
                 continue;
             }
@@ -37,5 +39,22 @@ public class GridController {
 
     public GridModel getModel() {
         return gridModel;
+    }
+
+    public void resizeModel(int x, int y) {
+        gridModel.resizeModel(x, y);
+        gridModel.fireModelChangedEvent();
+    }
+
+    public void enableAddObstaclesMode() {
+        gridPanelController.enableAddObstaclesMode();
+    }
+
+    public void clearActiveOperation() {
+        gridPanelController.clearActiveMode();
+    }
+
+    public void setGridPanelController(GridPanelController gridPanelController) {
+        this.gridPanelController = gridPanelController;
     }
 }

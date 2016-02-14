@@ -86,7 +86,9 @@ public class GridPanelView {
     }
 
     public void repaint() {
-        gridPanel.repaint();
+        gridPanel.resetPreferredSize();
+        scrollPane.revalidate();
+        scrollPane.repaint();
     }
 
     public JComponent getScrollPane() {

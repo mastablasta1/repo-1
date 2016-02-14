@@ -1,5 +1,7 @@
 package edu.idziak.planner.gui.grid.menu;
 
+import edu.idziak.planner.domain.logic.GridController;
+
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import java.awt.Dimension;
@@ -10,8 +12,8 @@ public class TabbedMenuController {
 
     private JTabbedPane tabbedPane;
 
-    public TabbedMenuController() {
-        gridMenuController = new GridMenuController();
+    public TabbedMenuController(GridController gridController) {
+        gridMenuController = new GridMenuController(gridController);
 
         tabbedPane = new JTabbedPane();
         tabbedPane.setPreferredSize(new Dimension(200, 300));

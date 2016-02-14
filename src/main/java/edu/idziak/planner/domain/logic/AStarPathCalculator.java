@@ -7,6 +7,9 @@ import edu.idziak.planner.domain.entity.GridPath;
 
 import java.util.Optional;
 
-public interface PathCalculator {
-    Optional<GridPath> calculatePath(GridModel gridModel, EntityCell entityCell, EntityDestinationCell destinationCell);
+public class AStarPathCalculator implements PathCalculator {
+    @Override
+    public Optional<GridPath> calculatePath(GridModel gridModel, EntityCell entityCell, EntityDestinationCell destinationCell) {
+        return null;
+    }
 }

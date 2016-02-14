@@ -20,6 +20,7 @@ public class GridPanelController {
     private final GridPanelModel gridPanelModel;
     private final GridController gridController;
     private final GridModel gridModel;
+    private final GridStateHolder gridStateHolder;
 
     // CONTEXT MENUS
     private final EmptyCellContextMenu emptyCellContextMenu;
@@ -27,12 +28,9 @@ public class GridPanelController {
     private final EntityCellContextMenu entityContextMenu;
     private final EntityDestinationCellContextMenu entityDestinationContextMenu;
 
-    // MODES
-    private GridStateHolder gridStateHolder;
-
     public GridPanelController(GridController gridController) {
         this.gridController = gridController;
-
+        gridController.setGridPanelController(this);
         gridStateHolder = new GridStateHolder();
         gridStateHolder.setLogState(true);
 
@@ -90,6 +88,12 @@ public class GridPanelController {
         gridStateHolder.addDestinationMode_entityCell = entityCell;
     }
 
+    public void enableAddObstaclesMode() {
+        if (gridStateHolder.isStateNull()) {
+            gridStateHolder.setState(Mode.ADD_OBSTACLES);
+        }
+    }
+
     public void gridLeftMouseClicked(Position gridPos) {
     }
 
@@ -104,6 +108,14 @@ public class GridPanelController {
             gridModel.putDestination(gridStateHolder.addDestinationMode_entityCell, gridPos);
             gridModel.fireModelChangedEvent();
             gridStateHolder.setState(null);
+        } else if (gridStateHolder.stateEquals(Mode.ADD_OBSTACLES)) {
+            if (gridModel.getCell(gridPos).isPresent()) {
+                return;
+            }
+            gridModel.putObstacle(gridPos);
+            gridModel.fireModelChangedEvent();
+        } else if (gridStateHolder.stateEquals(Mode.REMOVE_OBJECTS)) {
+            // TODO
         } else if (gridStateHolder.isStateNull() && cell.isPresent()) {
             gridStateHolder.setState(Mode.DRAGGING);
             gridStateHolder.draggingMode_cell = cell.get();
@@ -117,6 +129,12 @@ public class GridPanelController {
                 gridModel.moveCell(gridStateHolder.draggingMode_cell, gridPos);
                 gridModel.fireModelChangedEvent();
             }
+        } else if (gridStateHolder.stateEquals(Mode.ADD_OBSTACLES)) {
+            if (gridModel.getCell(gridPos).isPresent()) {
+                return;
+            }
+            gridModel.putObstacle(gridPos);
+            gridModel.fireModelChangedEvent();
         }
     }
 
@@ -126,7 +144,11 @@ public class GridPanelController {
         }
     }
 
+    public void clearActiveMode() {
+        gridStateHolder.setState(null);
+    }
+
     public enum Mode {
-        ADD_DESTINATION, DRAGGING
+        ADD_DESTINATION, ADD_OBSTACLES, DRAGGING, REMOVE_OBJECTS
     }
 }

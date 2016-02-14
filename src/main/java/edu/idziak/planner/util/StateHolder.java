@@ -9,8 +9,8 @@ public class StateHolder<T extends Enum> {
     private boolean logState;
 
     public void setState(T newState) {
-        if (logState) {
-            LOG.info("State changed from {} to {}", state, newState);
+        if (logState && newState != state) {
+            LOG.info("State changed, {} -> {}", state, newState);
         }
         this.state = newState;
     }

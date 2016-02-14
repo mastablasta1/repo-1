@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
+import java.awt.event.KeyEvent;
 
 public class ApplicationController {
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationController.class);
@@ -15,14 +16,15 @@ public class ApplicationController {
     private final ApplicationView applicationView;
     private final GridPanelController gridPanelController;
     private final TabbedMenuController tabbedMenuController;
+    private final GridController gridController;
 
     public ApplicationController() {
         GUIUtils.checkOnGUIThread();
         GUIUtils.setLookAndFeel();
 
-        GridController gridController = new GridController();
+        gridController = new GridController();
 
-        tabbedMenuController = new TabbedMenuController();
+        tabbedMenuController = new TabbedMenuController(gridController);
         gridPanelController = new GridPanelController(gridController);
 
         applicationView = new ApplicationView(this);
@@ -39,5 +41,11 @@ public class ApplicationController {
 
     public JComponent getContentView() {
         return gridPanelController.getView().getScrollPane();
+    }
+
+    void keyPressed(int keyCode) {
+        if (keyCode == KeyEvent.VK_ESCAPE) {
+            gridController.clearActiveOperation();
+        }
     }
 }

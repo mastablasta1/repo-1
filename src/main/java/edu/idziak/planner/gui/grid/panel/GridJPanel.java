@@ -26,18 +26,25 @@ import java.util.Set;
 
 public class GridJPanel extends JPanel {
     private GridPanelModel gridPanelModel;
+    private final GridModel gridModel;
 
     public GridJPanel(GridPanelModel gridPanelModel) {
         this.gridPanelModel = gridPanelModel;
-        GridModel gridModel = gridPanelModel.getGridModel();
+        gridModel = gridPanelModel.getGridModel();
+        resetPreferredSize();
+    }
+
+    public void resetPreferredSize() {
         setPreferredSize(new Dimension(
-                gridModel.getWidth() * gridPanelModel.getCellWidth(),
-                gridModel.getHeight() * gridPanelModel.getCellWidth()));
+                gridModel.getWidth() * gridPanelModel.getCellWidth() + 1,
+                gridModel.getHeight() * gridPanelModel.getCellWidth() + 1));
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        resetPreferredSize();
+
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);

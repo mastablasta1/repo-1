@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class GridModel {
 
@@ -126,13 +127,13 @@ public class GridModel {
     }
 
     public boolean isEmpty(Position gridPos) {
-        return getCell(gridPos).isPresent();
+        return !getCell(gridPos).isPresent();
     }
 
     public void clearCell(Position gridPosition) {
-        int xPos = gridPosition.getX();
-        int yPos = gridPosition.getY();
-        GridCell gridCell = grid[xPos][yPos];
+        int x = gridPosition.getX();
+        int y = gridPosition.getY();
+        GridCell gridCell = grid[x][y];
 
         if (gridCell instanceof EntityCell) {
             EntityDestinationCell destination = ((EntityCell) gridCell).getDestination();
@@ -140,11 +141,52 @@ public class GridModel {
                 Position position = destination.getPosition();
                 grid[position.getX()][position.getY()] = null;
             }
+            deletePathsOfCell(gridCell);
         } else if (gridCell instanceof EntityDestinationCell) {
             EntityCell entityCell = ((EntityDestinationCell) gridCell).getEntityCell();
             entityCell.setDestination(null);
+            deletePathsOfCell(gridCell);
         }
 
-        grid[xPos][yPos] = null;
+        grid[x][y] = null;
+    }
+
+    private void deletePathsOfCell(GridCell gridCell) {
+        gridPaths = gridPaths.stream()
+                .filter(gridPath -> gridPath.getStart() != gridCell
+                        && gridPath.getEnd() != gridCell)
+                .collect(Collectors.toSet());
+    }
+
+    public void resizeModel(int x, int y) {
+        Preconditions.checkArgument(x > 0 && y > 0, "Negative size");
+        if (x < grid.length) {
+            for (int i = x; i < grid.length; i++) {
+                for (int j = 0; j < grid[0].length; j++) {
+                    clearCell(Position.of(i, j));
+                }
+            }
+        }
+
+        if (y < grid[0].length) {
+            for (int i = 0; i < grid.length; i++) {
+                for (int j = y; j < grid[0].length; j++) {
+                    clearCell(Position.of(i, j));
+                }
+            }
+        }
+
+        GridCell[][] newGrid = new GridCell[x][y];
+
+        for (int i = 0; i < Math.min(x, grid.length); i++) {
+            System.arraycopy(grid[i], 0, newGrid[i], 0, Math.min(y, grid[i].length));
+        }
+        grid = newGrid;
+    }
+
+    public void clearAll() {
+        gridPaths = new HashSet<>();
+        grid = new GridCell[grid.length][grid[0].length];
+        entityCounter = 0;
     }
 }
