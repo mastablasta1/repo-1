@@ -16,7 +16,7 @@ public class GridController {
     private GridPanelController gridPanelController;
 
     public GridController() {
-        pathCalculator = new DummyPathCalculator();
+        pathCalculator = new AStarPathCalculator();
         gridModel = new GridModel(10, 10);
     }
 

@@ -60,10 +60,7 @@ public class GridModel {
 
     public boolean isPositionWithinBounds(Position position) {
         Preconditions.checkNotNull(position, "Position null");
-        return position.getX() >= 0
-                && position.getY() >= 0
-                && position.getX() < grid.length
-                && position.getY() < grid[0].length;
+        return isPositionWithinBounds(position.getX(), position.getY());
     }
 
 
@@ -122,8 +119,19 @@ public class GridModel {
     }
 
     public Optional<GridCell> getCell(Position gridPos) {
-        Preconditions.checkArgument(isPositionWithinBounds(gridPos), "Position out of bounds");
-        return Optional.ofNullable(grid[gridPos.getX()][gridPos.getY()]);
+        return getCell(gridPos.getX(), gridPos.getY());
+    }
+
+    public Optional<GridCell> getCell(int x, int y) {
+        Preconditions.checkArgument(isPositionWithinBounds(x, y), "Position out of bounds");
+        return Optional.ofNullable(grid[x][y]);
+    }
+
+    private boolean isPositionWithinBounds(int x, int y) {
+        return x >= 0
+                && y >= 0
+                && x < grid.length
+                && y < grid[0].length;
     }
 
     public boolean isEmpty(Position gridPos) {
@@ -188,5 +196,9 @@ public class GridModel {
         gridPaths = new HashSet<>();
         grid = new GridCell[grid.length][grid[0].length];
         entityCounter = 0;
+    }
+
+    public static boolean isObstacleCell(GridCell cell) {
+        return cell instanceof ObstacleCell;
     }
 }

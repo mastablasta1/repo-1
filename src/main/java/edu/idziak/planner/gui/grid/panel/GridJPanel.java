@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class GridJPanel extends JPanel {
+    private final Font LABEL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 20);
     private GridPanelModel gridPanelModel;
     private final GridModel gridModel;
 
@@ -130,13 +132,15 @@ public class GridJPanel extends JPanel {
             return;
 
         Rectangle bounds = g.getClipBounds();
-        int centerX = (int) bounds.getCenterX();
-        int centerY = (int) bounds.getCenterY();
-        FontMetrics fontMetrics = g.getFontMetrics();
-        Rectangle2D stringBounds = fontMetrics.getStringBounds(label, g);
+        g.setFont(LABEL_FONT);
+        FontMetrics fm = g.getFontMetrics();
+        Rectangle2D sb = fm.getStringBounds(label, g);
 
         g.setPaint(Color.BLACK);
-        g.drawString(label, centerX - (int) stringBounds.getWidth() / 2, centerY);
+
+        int x = (int) (bounds.getX() + (bounds.getWidth() - sb.getWidth()) / 2);
+        int y = (int) (bounds.getY() + (bounds.getHeight() - sb.getHeight()) / 2 + fm.getAscent());
+        g.drawString(label, x, y);
     }
 
     private void drawCellRectangle(Graphics2D g) {

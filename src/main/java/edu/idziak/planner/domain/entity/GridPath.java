@@ -59,5 +59,13 @@ public class GridPath {
         public GridPath build() {
             return new GridPath(start, end, points);
         }
+
+        public EntityCell getStart() {
+            return start;
+        }
+
+        public void points(List<Position> points) {
+            this.points = new ArrayList<>(points);
+        }
     }
 }
